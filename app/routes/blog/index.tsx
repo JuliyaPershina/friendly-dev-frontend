@@ -1,31 +1,39 @@
 import type { Route } from './+types/index';
-import type { PostMeta } from '~/types';
+// import type { PostMeta } from '~/types';
 import { Link } from 'react-router';
 import PostCard from '~/components/PostCard';
 import { useState } from 'react';
 import Pagination from '~/components/Pagination';
 import PostFilter from '~/components/PostFilter';
+import type { Post } from '~/types';
 
 export async function loader({
   request,
-}: Route.LoaderArgs): Promise<{ posts: PostMeta[] }> {
-  const url = new URL('/data/posts-meta.json', request.url);
-  const res = await fetch(url.href);
+}: Route.LoaderArgs): Promise<{ posts: Post[] }> {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/posts?populate=*`);
 
   if (!res.ok) {
     throw new Error('Не вдалося завантажити пости');
   }
 
-  const data = await res.json();
+  const json = await res.json();
 
-  data.sort((a: PostMeta, b: PostMeta) => {
-    return new Date(b.date).getTime() - new Date(a.date).getTime();
-  });
-  return { posts: data };
+  const posts: Post[] = json.data.map((item: any) => ({
+    id: item.id,
+    slug: item.slug,
+    title: item.title,
+    excerpt: item.excerpt ?? '',
+    date: item.date,
+    cover: item.cover?.url ? `${item.cover.url}` : null,
+  }));
+
+  posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  return { posts };
 }
 
 const BlogPage = ({ loaderData }: Route.ComponentProps) => {
-  const { posts } = loaderData as { posts: PostMeta[] };
+  const { posts } = loaderData as { posts: Post[] };
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const postsPerPage = 3;

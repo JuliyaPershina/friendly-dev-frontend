@@ -1,43 +1,62 @@
 import type { Route } from './+types/index';
-import type { Project, StrapiProject, StrapiResponse } from '~/types';
+import type {
+  Project,
+  StrapiProject,
+  StrapiResponse,
+  Post,
+  StrapiPost,
+} from '~/types';
 import FeaturedProjects from '~/components/featured-projects';
 import AboutPreview from '~/components/About-preview';
-import type { PostMeta } from '~/types';
+// import type { PostMeta } from '~/types';
 import LatestPosts from '~/components/LatestPosts';
+
 
 export async function loader({
   request,
-}: Route.LoaderArgs): Promise<{ projects: Project[]; posts: PostMeta[] }> {
+}: Route.LoaderArgs): Promise<{ projects: Project[]; posts: Post[] }> {
   const url = new URL(request.url);
 
   const [projectRes, postRes] = await Promise.all([
     fetch(`${import.meta.env.VITE_API_URL}/projects?populate=*`),
-    fetch(new URL('/data/posts-meta.json', url)),
+    fetch(`${import.meta.env.VITE_API_URL}/posts?populate=*`),
   ]);
 
   if (!projectRes.ok || !postRes.ok) {
     throw new Error('Не вдалося завантажити проєкти або пости');
-  };
+  }
 
-  const json: StrapiResponse<StrapiProject> = await projectRes.json();
+  const projectJson: StrapiResponse<StrapiProject> = await projectRes.json();
 
-  const [projects, posts] = await Promise.all([
-    json.data.map((item: StrapiProject) => ({
+  const postJson: StrapiResponse<StrapiPost> = await postRes.json();
+
+  const projects = projectJson.data.map((item) => ({
     id: item.id,
     documentId: item.documentId,
     title: item.title,
     description: item.description,
-    image: item.image?.url
-      ? `${item.image.url}`
-      : '/images/no-image.png',
+    image: item.image?.url ?? '/images/no-image.png',
     url: item.url,
     date: item.date,
     category: item.category,
     featured: item.featured,
-  })),
-    postRes.json(),
-  ]);
+  }));
 
+  const posts = Array.isArray(postJson.data)
+  ? postJson.data.map((item) => ({
+    id: item.id,
+    title: item.title,
+    slug: item.slug,
+    excerpt: item.excerpt,
+    date: item.date,
+    content: item.content,
+    cover: item.cover?.url ? `${item.cover.url}` : null,
+  }))
+  : [];
+
+  console.log(posts);
+
+  
   return { projects, posts };
 }
 
