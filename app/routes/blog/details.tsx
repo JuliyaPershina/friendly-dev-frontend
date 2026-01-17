@@ -22,6 +22,7 @@ export async function loader({ params }: Route.LoaderArgs) {
   if (!item) {
     throw new Response('Не знайдено', { status: 404 });
   }
+  // console.log("item:", item);
 
   const post = {
     id: item.id,
@@ -30,8 +31,8 @@ export async function loader({ params }: Route.LoaderArgs) {
     excerpt: item.excerpt,
     date: item.date,
     content: item.content,
-    cover: item.cover?.url ? `${item.cover.url}` : null,
   };
+
 
   return { post };
 }
@@ -45,6 +46,9 @@ type BlogPostDetailsPageProps = {
 const BlogPostDetailsPage = ({ loaderData }: BlogPostDetailsPageProps) => {
   const { post } = loaderData;
 
+  console.log("post:", post);
+  console.log(typeof post.content, post.content);
+
   return (
     <div className="max-w-3xl mx-auto px-6 py-12 bg-gray-900">
       <h1 className="text-3xl font-bold text-blue-400 mb-2">{post.title}</h1>
@@ -54,7 +58,7 @@ const BlogPostDetailsPage = ({ loaderData }: BlogPostDetailsPageProps) => {
       </p>
 
       <div className="prose prose-invert max-w-none mb-12">
-        <div>{post.content}</div>
+        <ReactMarkdown>{post.content}</ReactMarkdown>
       </div>
 
       <div className="text-center">

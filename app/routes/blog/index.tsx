@@ -24,7 +24,7 @@ export async function loader({
     title: item.title,
     excerpt: item.excerpt ?? '',
     date: item.date,
-    cover: item.cover?.url ? `${item.cover.url}` : null,
+    content: item.content,
   }));
 
   posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -34,6 +34,9 @@ export async function loader({
 
 const BlogPage = ({ loaderData }: Route.ComponentProps) => {
   const { posts } = loaderData as { posts: Post[] };
+
+  console.log(typeof posts, posts);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const postsPerPage = 3;

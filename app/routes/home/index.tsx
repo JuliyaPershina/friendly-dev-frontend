@@ -43,16 +43,15 @@ export async function loader({
   }));
 
   const posts = Array.isArray(postJson.data)
-  ? postJson.data.map((item) => ({
-    id: item.id,
-    title: item.title,
-    slug: item.slug,
-    excerpt: item.excerpt,
-    date: item.date,
-    content: item.content,
-    cover: item.cover?.url ? `${item.cover.url}` : null,
-  }))
-  : [];
+    ? postJson.data.map((item) => ({
+        id: item.id,
+        title: item.title,
+        slug: item.slug,
+        excerpt: item.excerpt,
+        date: item.date,
+        content: item.content,
+      }))
+    : [];
 
   console.log(posts);
 

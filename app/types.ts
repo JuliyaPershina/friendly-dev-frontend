@@ -17,7 +17,6 @@ export type Post = {
   excerpt: string;
   date: string;
   content: string;
-  cover?: string | null;
 };
 
 export type StrapiResponse<T> = {
@@ -44,5 +43,4 @@ export type StrapiPost = {
   excerpt: string;
   date: string;
   content: string;
-  cover?: { url: string } | null;
 };
