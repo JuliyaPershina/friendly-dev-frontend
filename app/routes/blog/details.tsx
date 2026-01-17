@@ -54,7 +54,7 @@ const BlogPostDetailsPage = ({ loaderData }: BlogPostDetailsPageProps) => {
       </p>
 
       <div className="prose prose-invert max-w-none mb-12">
-        <ReactMarkdown>{post.content}</ReactMarkdown>
+        <div>{post.content}</div>
       </div>
 
       <div className="text-center">

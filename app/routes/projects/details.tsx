@@ -12,6 +12,8 @@ export async function loader({ params }: Route.LoaderArgs) {
     }/projects?filters[documentId][$eq]=${id}&populate=*`
   );
 
+  // console.log("res:", res);
+
   if (!res.ok) {
     throw new Error('Не вдалося завантажити проєкт');
   }
@@ -47,7 +49,7 @@ export function HydrateFallback() {
 }
 const ProjectDetailsPage = ({ loaderData }: Route.ComponentProps) => {
   const { project } = loaderData as { project: Project };
-  console.log(project);
+  // console.log("project:", project);
 
   return (
     <>
