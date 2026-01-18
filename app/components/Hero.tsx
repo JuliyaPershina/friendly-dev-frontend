@@ -7,7 +7,7 @@ interface HeroProps {
 
 const Hero = ({
   name = '[ІМʼЯ]',
-  text = 'Я створюю дружні веб-інтерфейси та допомагаю іншим стати впевненими, сучасними розробниками.',
+  text = 'Я front-end розробник-початківець, який створює сучасні веб-інтерфейси й ділиться практичними знаннями, здобутими в процесі навчання.',
 }: HeroProps) => {
   return (
     <header className="text-center py-20 px-4 bg-gray-900 text-white transition-colors duration-300">
